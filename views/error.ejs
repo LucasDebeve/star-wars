@@ -1,0 +1,8 @@
+<%- include('partials/top') %>
+<section class="container narrow error-page">
+  <p class="error-code"><%= status %></p>
+  <h1><%= status === 404 ? 'Perdu dans l\'hyperespace' : status === 403 ? 'Accès interdit' : 'Une perturbation dans la Force' %></h1>
+  <p class="lead"><%= message %></p>
+  <a class="btn btn-primary" href="/">Retour à la base</a>
+</section>
+<%- include('partials/bottom') %>

@@ -1,0 +1,64 @@
+<%- include('partials/top') %>
+
+<% if (showCrawl) { %>
+<section class="hero" aria-labelledby="hero-title">
+  <p class="hero-intro">Il y a bien longtemps, dans une galaxie lointaine, très lointaine…</p>
+  <h1 id="hero-title" class="hero-title">HOLO<span>NET</span></h1>
+  <div class="crawl-viewport" aria-hidden="true">
+    <div class="crawl">
+      <p class="crawl-episode">Épisode X</p>
+      <p class="crawl-heading">LA NOUVELLE TRANSMISSION</p>
+      <p>C'est une période d'effervescence. Depuis des bases secrètes disséminées à travers la galaxie, les fans de Star Wars partagent leurs analyses, leurs théories et leurs passions.</p>
+      <p>Jedi, Sith, contrebandiers et chasseurs de primes se retrouvent sur la HoloNet, l'ultime réseau d'archives de la galaxie, pour préserver le savoir de mille générations…</p>
+    </div>
+  </div>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="#transmissions">Lire les transmissions</a>
+    <% if (!currentUser) { %><a class="btn btn-ghost" href="/inscription">Rejoindre la HoloNet</a><% } else { %><a class="btn btn-ghost" href="/ecrire">Écrire un article</a><% } %>
+  </div>
+</section>
+<% } %>
+
+<section id="transmissions" class="container section">
+  <div class="section-head">
+    <h2 class="section-title"><%= category ? categoryName(category) : q ? 'Résultats de recherche' : 'Dernières transmissions' %></h2>
+    <form class="search" action="/" method="get" role="search">
+      <% if (category) { %><input type="hidden" name="categorie" value="<%= category %>"><% } %>
+      <label class="sr-only" for="q">Rechercher</label>
+      <input id="q" type="search" name="q" value="<%= q %>" placeholder="Rechercher dans les archives…" maxlength="100">
+      <button class="btn btn-primary btn-sm" type="submit">Scanner</button>
+    </form>
+  </div>
+
+  <nav class="chips" aria-label="Catégories">
+    <a class="chip <%= !category ? 'active' : '' %>" href="/<%= q ? '?q=' + encodeURIComponent(q) : '' %>">Toutes</a>
+    <% categories.forEach((c) => { %>
+      <a class="chip cat-<%= c.slug %> <%= category === c.slug ? 'active' : '' %>" href="/?categorie=<%= c.slug %><%= q ? '&q=' + encodeURIComponent(q) : '' %>"><%= c.name %></a>
+    <% }) %>
+  </nav>
+
+  <% if (q) { %><p class="muted"><%= total %> transmission<%= total > 1 ? 's' : '' %> pour « <%= q %> »</p><% } %>
+
+  <% if (articles.length) { %>
+    <div class="grid">
+      <% articles.forEach((a) => { %><%- include('partials/article-card', { a }) %><% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty">
+      <p class="empty-title">Les archives sont vides.</p>
+      <p class="muted">« Si un objet n'apparaît pas dans nos archives, c'est qu'il n'existe pas. » — Jocasta Nu</p>
+      <% if (currentUser) { %><a class="btn btn-primary" href="/ecrire">Écrire le premier article</a><% } %>
+    </div>
+  <% } %>
+
+  <% if (pages > 1) {
+       const link = (p) => '/?' + new URLSearchParams(Object.assign({}, category && { categorie: category }, q && { q }, { page: p })).toString(); %>
+    <nav class="pagination" aria-label="Pagination">
+      <% if (page > 1) { %><a class="btn btn-ghost btn-sm" href="<%= link(page - 1) %>">← Précédent</a><% } %>
+      <span class="muted">Page <%= page %> / <%= pages %></span>
+      <% if (page < pages) { %><a class="btn btn-ghost btn-sm" href="<%= link(page + 1) %>">Suivant →</a><% } %>
+    </nav>
+  <% } %>
+</section>
+
+<%- include('partials/bottom') %>

@@ -1,0 +1,45 @@
+<%- include('../partials/top') %>
+<section class="container narrow">
+  <div class="panel">
+    <h1 class="panel-title"><%= article ? 'Modifier la transmission' : 'Nouvelle transmission' %></h1>
+    <form method="post" action="<%= article ? '/articles/' + article.slug + '/modifier' : '/ecrire' %>" class="form" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+
+      <div class="field">
+        <label for="title">Titre</label>
+        <input id="title" name="title" value="<%= values.title || '' %>" required minlength="5" maxlength="120" <% if (errors.title) { %>aria-invalid="true" aria-describedby="title-error"<% } %>>
+        <%- include('../partials/field-error', { field: 'title' }) %>
+      </div>
+
+      <div class="field">
+        <label for="category">Catégorie</label>
+        <select id="category" name="category">
+          <% categories.forEach((c) => { %>
+            <option value="<%= c.slug %>" <%= values.category === c.slug ? 'selected' : '' %>><%= c.name %></option>
+          <% }) %>
+        </select>
+        <%- include('../partials/field-error', { field: 'category' }) %>
+      </div>
+
+      <div class="field">
+        <div class="label-row">
+          <label for="content">Contenu</label>
+          <span class="tabs" role="tablist">
+            <button type="button" class="tab active" data-tab="write">Écrire</button>
+            <button type="button" class="tab" data-tab="preview">Aperçu</button>
+          </span>
+        </div>
+        <textarea id="content" name="content" rows="18" required maxlength="50000" <% if (errors.content) { %>aria-invalid="true" aria-describedby="content-error"<% } %>><%= values.content || '' %></textarea>
+        <div class="prose preview" hidden></div>
+        <p class="hint">Markdown accepté : <code>## Titre</code>, <code>**gras**</code>, <code>*italique*</code>, <code>&gt; citation</code>, listes, liens et images (https).</p>
+        <%- include('../partials/field-error', { field: 'content' }) %>
+      </div>
+
+      <div class="form-actions">
+        <a class="btn btn-ghost" href="<%= article ? '/articles/' + article.slug : '/' %>">Annuler</a>
+        <button class="btn btn-primary" type="submit"><%= article ? 'Enregistrer' : 'Publier' %></button>
+      </div>
+    </form>
+  </div>
+</section>
+<%- include('../partials/bottom') %>

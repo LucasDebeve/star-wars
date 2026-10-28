@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title ? title + ' — HoloNet' : 'HoloNet — Chroniques d\'une galaxie lointaine' %></title>
+  <meta name="description" content="HoloNet, le blog communautaire dédié à l'univers Star Wars : Jedi, Sith, vaisseaux, planètes et bien plus.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Exo+2:ital,wght@0,400;0,600;1,400&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script src="/js/main.js" defer></script>
+</head>
+<body>
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="/" aria-label="HoloNet — accueil">
+        <span class="logo-mark" aria-hidden="true">✦</span>
+        <span class="logo-text">HOLO<span>NET</span></span>
+      </a>
+
+      <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav">
+        <span class="sr-only">Menu</span><span class="bars" aria-hidden="true"></span>
+      </button>
+
+      <nav id="main-nav" class="main-nav" aria-label="Navigation principale">
+        <a href="/" class="<%= path === '/' ? 'active' : '' %>">Transmissions</a>
+        <% if (currentUser) { %>
+          <a href="/ecrire" class="btn btn-saber btn-sm faction-<%= currentUser.faction %>">✎ Écrire</a>
+          <a href="/holonautes/<%= encodeURIComponent(currentUser.username) %>" class="user-chip faction-<%= currentUser.faction %>">
+            <span class="dot" aria-hidden="true"></span><%= currentUser.username %>
+          </a>
+          <a href="/mon-compte" class="<%= path === '/mon-compte' ? 'active' : '' %>">Mon compte</a>
+          <form action="/deconnexion" method="post" class="inline-form">
+            <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+            <button type="submit" class="link-btn">Déconnexion</button>
+          </form>
+        <% } else { %>
+          <a href="/connexion" class="<%= path === '/connexion' ? 'active' : '' %>">Connexion</a>
+          <a href="/inscription" class="btn btn-primary btn-sm">Rejoindre</a>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenu" class="site-main">
+    <% if (flash) { %>
+      <div class="container">
+        <div class="flash flash-<%= flash.type %>" role="status"><%= flash.message %></div>
+      </div>
+    <% } %>

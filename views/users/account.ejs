@@ -1,0 +1,54 @@
+<%- include('../partials/top') %>
+<section class="container narrow">
+  <div class="panel">
+    <h1 class="panel-title">Mon compte</h1>
+    <p class="muted"><strong><%= currentUser.username %></strong> · <%= currentUser.email %></p>
+
+    <form method="post" action="/mon-compte" class="form" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <fieldset class="field factions">
+        <legend>Votre allégeance</legend>
+        <div class="faction-grid">
+          <% factions.forEach((f) => { %>
+            <label class="faction-option faction-<%= f.slug %>">
+              <input type="radio" name="faction" value="<%= f.slug %>" <%= values.faction === f.slug ? 'checked' : '' %>>
+              <span class="faction-card"><span class="saber" aria-hidden="true"></span><%= f.name %></span>
+            </label>
+          <% }) %>
+        </div>
+        <%- include('../partials/field-error', { field: 'faction' }) %>
+      </fieldset>
+      <div class="field">
+        <label for="bio">Biographie</label>
+        <textarea id="bio" name="bio" rows="4" maxlength="500" placeholder="Pilote de X-Wing à mes heures perdues…"><%= values.bio %></textarea>
+        <%- include('../partials/field-error', { field: 'bio' }) %>
+      </div>
+      <button class="btn btn-primary" type="submit">Mettre à jour le profil</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2 class="panel-title">Changer de mot de passe</h2>
+    <form method="post" action="/mon-compte/mot-de-passe" class="form" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <div class="field">
+        <label for="current">Mot de passe actuel</label>
+        <input id="current" name="current" type="password" required autocomplete="current-password">
+        <%- include('../partials/field-error', { field: 'current', errors: pwdErrors }) %>
+      </div>
+      <div class="field">
+        <label for="password">Nouveau mot de passe</label>
+        <input id="password" name="password" type="password" required minlength="10" maxlength="128" autocomplete="new-password" data-strength>
+        <div class="strength" aria-hidden="true"><span></span></div>
+        <%- include('../partials/field-error', { field: 'password', errors: pwdErrors }) %>
+      </div>
+      <div class="field">
+        <label for="confirm">Confirmer</label>
+        <input id="confirm" name="confirm" type="password" required autocomplete="new-password">
+        <%- include('../partials/field-error', { field: 'confirm', errors: pwdErrors }) %>
+      </div>
+      <button class="btn btn-ghost" type="submit">Changer le mot de passe</button>
+    </form>
+  </div>
+</section>
+<%- include('../partials/bottom') %>
