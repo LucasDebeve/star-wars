@@ -1,0 +1,23 @@
+<%- include('../partials/top') %>
+<section class="container">
+  <div class="profile-card faction-<%= profile.faction %>">
+    <div class="avatar" aria-hidden="true"><%= profile.username.charAt(0).toUpperCase() %></div>
+    <div>
+      <h1 class="profile-name"><%= profile.username %></h1>
+      <p class="profile-faction"><span class="dot" aria-hidden="true"></span><%= factionName(profile.faction) %></p>
+      <% if (profile.bio) { %><p class="profile-bio"><%= profile.bio %></p><% } %>
+      <p class="muted small">Membre depuis le <%= formatDate(profile.created_at) %> · <%= articles.length %> article<%= articles.length > 1 ? 's' : '' %> · <%= commentCount %> commentaire<%= commentCount > 1 ? 's' : '' %></p>
+    </div>
+  </div>
+</section>
+<section class="container section">
+  <h2 class="section-title">Transmissions de <%= profile.username %></h2>
+  <% if (articles.length) { %>
+    <div class="grid">
+      <% articles.forEach((a) => { %><%- include('../partials/article-card', { a }) %><% }) %>
+    </div>
+  <% } else { %>
+    <p class="muted">Aucune transmission pour le moment.</p>
+  <% } %>
+</section>
+<%- include('../partials/bottom') %>

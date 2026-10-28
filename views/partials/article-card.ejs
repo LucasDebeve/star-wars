@@ -1,0 +1,16 @@
+<article class="card cat-<%= a.category %>">
+  <a class="card-link" href="/articles/<%= a.slug %>">
+    <div class="card-cover" aria-hidden="true">
+      <span class="card-glyph"></span>
+    </div>
+    <div class="card-body">
+      <span class="badge"><%= categoryName(a.category) %></span>
+      <h3 class="card-title"><%= a.title %></h3>
+      <p class="card-excerpt"><%= a.excerpt %></p>
+    </div>
+  </a>
+  <footer class="card-meta">
+    <a class="author faction-<%= a.author_faction %>" href="/holonautes/<%= encodeURIComponent(a.author_name) %>"><span class="dot" aria-hidden="true"></span><%= a.author_name %></a>
+    <span><time datetime="<%= a.created_at %>"><%= formatDate(a.created_at) %></time> · 💬 <%= a.comment_count %></span>
+  </footer>
+</article>

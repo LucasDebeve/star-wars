@@ -1,0 +1,24 @@
+<%- include('../partials/top') %>
+<section class="container narrow">
+  <div class="panel">
+    <h1 class="panel-title">Connexion</h1>
+    <p class="muted">Identifiez-vous pour accéder au terminal.</p>
+
+    <% if (error) { %><div class="flash flash-error" role="alert"><%= error %></div><% } %>
+
+    <form method="post" action="/connexion" class="form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <div class="field">
+        <label for="login">Nom d'holonaute ou e-mail</label>
+        <input id="login" name="login" value="<%= values.login || '' %>" required autocomplete="username" autofocus>
+      </div>
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <input id="password" name="password" type="password" required autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Accéder à la HoloNet</button>
+    </form>
+    <p class="form-alt">Nouveau dans la galaxie ? <a href="/inscription">Créer un compte</a></p>
+  </div>
+</section>
+<%- include('../partials/bottom') %>

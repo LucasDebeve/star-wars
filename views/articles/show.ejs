@@ -1,0 +1,72 @@
+<%- include('../partials/top') %>
+<article class="container narrow article cat-<%= article.category %>">
+  <header class="article-header">
+    <a class="badge" href="/?categorie=<%= article.category %>"><%= categoryName(article.category) %></a>
+    <h1 class="article-title"><%= article.title %></h1>
+    <p class="article-meta">
+      Par <a class="author faction-<%= article.author_faction %>" href="/holonautes/<%= encodeURIComponent(article.author_name) %>"><span class="dot" aria-hidden="true"></span><%= article.author_name %></a>
+      · <time datetime="<%= article.created_at %>"><%= formatDate(article.created_at) %></time>
+      <% if (article.updated_at !== article.created_at) { %><span class="muted">(modifié le <%= formatDate(article.updated_at) %>)</span><% } %>
+      · <%= minutes %> min de lecture
+    </p>
+    <% if (canEdit) { %>
+      <div class="article-actions">
+        <a class="btn btn-ghost btn-sm" href="/articles/<%= article.slug %>/modifier">Modifier</a>
+        <form action="/articles/<%= article.slug %>/supprimer" method="post" class="inline-form" data-confirm="Détruire définitivement cet article ?">
+          <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+          <button class="btn btn-danger btn-sm" type="submit">Supprimer</button>
+        </form>
+      </div>
+    <% } %>
+    <div class="saber-divider" aria-hidden="true"></div>
+  </header>
+
+  <div class="prose"><%- html %></div>
+</article>
+
+<section id="commentaires" class="container narrow comments">
+  <h2 class="section-title">Communications (<%= comments.length %>)</h2>
+
+  <% if (comments.length) { %>
+    <ol class="comment-list">
+      <% comments.forEach((c) => { %>
+        <li class="comment">
+          <div class="comment-head">
+            <a class="author faction-<%= c.author_faction %>" href="/holonautes/<%= encodeURIComponent(c.author_name) %>"><span class="dot" aria-hidden="true"></span><%= c.author_name %></a>
+            <time class="muted small" datetime="<%= c.created_at %>"><%= formatDate(c.created_at) %></time>
+            <% if (canManage(c.author_id)) { %>
+              <form action="/commentaires/<%= c.id %>/supprimer" method="post" class="inline-form push-right" data-confirm="Supprimer ce commentaire ?">
+                <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+                <button class="link-btn small" type="submit">Supprimer</button>
+              </form>
+            <% } %>
+          </div>
+          <p class="comment-body"><%= c.body %></p>
+        </li>
+      <% }) %>
+    </ol>
+  <% } else { %>
+    <p class="muted">Aucune communication reçue pour l'instant. Soyez le premier à émettre.</p>
+  <% } %>
+
+  <% if (currentUser) { %>
+    <form class="form comment-form" method="post" action="/articles/<%= article.slug %>/commentaires">
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <label for="body" class="sr-only">Votre commentaire</label>
+      <textarea id="body" name="body" rows="3" maxlength="2000" required placeholder="Transmettre un message…"></textarea>
+      <button class="btn btn-primary" type="submit">Émettre</button>
+    </form>
+  <% } else { %>
+    <p class="panel-inline"><a href="/connexion">Connectez-vous</a> ou <a href="/inscription">rejoignez la HoloNet</a> pour commenter.</p>
+  <% } %>
+</section>
+
+<% if (related.length) { %>
+<section class="container section">
+  <h2 class="section-title">Dans la même catégorie</h2>
+  <div class="grid">
+    <% related.forEach((a) => { %><%- include('../partials/article-card', { a }) %><% }) %>
+  </div>
+</section>
+<% } %>
+<%- include('../partials/bottom') %>

@@ -1,0 +1,54 @@
+<%- include('../partials/top') %>
+<section class="container narrow">
+  <div class="panel">
+    <h1 class="panel-title">Rejoindre la HoloNet</h1>
+    <p class="muted">Créez votre identité holographique et choisissez votre camp.</p>
+
+    <form method="post" action="/inscription" class="form" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+
+      <div class="field">
+        <label for="username">Nom d'holonaute</label>
+        <input id="username" name="username" value="<%= values.username || '' %>" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_\-]{3,24}" autocomplete="username" <% if (errors.username) { %>aria-invalid="true" aria-describedby="username-error"<% } %>>
+        <%- include('../partials/field-error', { field: 'username' }) %>
+      </div>
+
+      <div class="field">
+        <label for="email">Adresse e-mail</label>
+        <input id="email" name="email" type="email" value="<%= values.email || '' %>" required maxlength="254" autocomplete="email" <% if (errors.email) { %>aria-invalid="true" aria-describedby="email-error"<% } %>>
+        <%- include('../partials/field-error', { field: 'email' }) %>
+      </div>
+
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <input id="password" name="password" type="password" required minlength="10" maxlength="128" autocomplete="new-password" data-strength <% if (errors.password) { %>aria-invalid="true" aria-describedby="password-error"<% } %>>
+        <div class="strength" aria-hidden="true"><span></span></div>
+        <p class="hint">10 caractères minimum, avec au moins une lettre et un chiffre.</p>
+        <%- include('../partials/field-error', { field: 'password' }) %>
+      </div>
+
+      <div class="field">
+        <label for="confirm">Confirmer le mot de passe</label>
+        <input id="confirm" name="confirm" type="password" required autocomplete="new-password" <% if (errors.confirm) { %>aria-invalid="true" aria-describedby="confirm-error"<% } %>>
+        <%- include('../partials/field-error', { field: 'confirm' }) %>
+      </div>
+
+      <fieldset class="field factions">
+        <legend>Votre allégeance</legend>
+        <div class="faction-grid">
+          <% factions.forEach((f) => { %>
+            <label class="faction-option faction-<%= f.slug %>">
+              <input type="radio" name="faction" value="<%= f.slug %>" <%= values.faction === f.slug ? 'checked' : '' %>>
+              <span class="faction-card"><span class="saber" aria-hidden="true"></span><%= f.name %></span>
+            </label>
+          <% }) %>
+        </div>
+        <%- include('../partials/field-error', { field: 'faction' }) %>
+      </fieldset>
+
+      <button class="btn btn-primary btn-block" type="submit">Créer mon compte</button>
+    </form>
+    <p class="form-alt">Déjà membre ? <a href="/connexion">Se connecter</a></p>
+  </div>
+</section>
+<%- include('../partials/bottom') %>
